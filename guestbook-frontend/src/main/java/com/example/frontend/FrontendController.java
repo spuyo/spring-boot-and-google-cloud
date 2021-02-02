@@ -15,8 +15,8 @@ import org.springframework.cloud.gcp.pubsub.core.*;
 public class FrontendController {
 	@Autowired
 	private GuestbookMessagesClient client;
-	@Autowired
-    private PubSubTemplate pubSubTemplate;
+    @Autowired
+    private OutboundGateway outboundGateway;
 	
 	@Value("${greeting:Hello}")
 	private String greeting;
@@ -36,7 +36,7 @@ public class FrontendController {
 		model.addAttribute("name", name);
 		if (message != null && !message.trim().isEmpty()) {
 			// Post the message to the backend service
-			pubSubTemplate.publish("messages", name + ": " + message);
+			outboundGateway.publishMessage(name + ": " + message);
 			GuestbookMessage payload = new GuestbookMessage();
 			payload.setName(name);
 			payload.setMessage(message);
