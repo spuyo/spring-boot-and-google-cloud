@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.*;
 import java.util.*;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.cloud.gcp.pubsub.core.*;
 
 @RefreshScope
 @Controller
@@ -14,6 +15,8 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 public class FrontendController {
 	@Autowired
 	private GuestbookMessagesClient client;
+	@Autowired
+    private PubSubTemplate pubSubTemplate;
 	
 	@Value("${greeting:Hello}")
 	private String greeting;
@@ -33,6 +36,7 @@ public class FrontendController {
 		model.addAttribute("name", name);
 		if (message != null && !message.trim().isEmpty()) {
 			// Post the message to the backend service
+			pubSubTemplate.publish("messages", name + ": " + message);
 			GuestbookMessage payload = new GuestbookMessage();
 			payload.setName(name);
 			payload.setMessage(message);
