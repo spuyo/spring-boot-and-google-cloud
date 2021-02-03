@@ -1,0 +1,7 @@
+runtime: java11
+service: guestbook-service
+instance_class: B4_1G
+manual_scaling:
+  instances: 2
+env_variables:
+  SPRING_PROFILES_ACTIVE: cloud
